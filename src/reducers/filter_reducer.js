@@ -15,7 +15,7 @@ const filter_reducer = (state, action) => {
       return {
         ...state,
         // below, action.payload is an array (products) and if we just paste it as is without spreading then products and filtered_products would point to the same (object reference concept) and hence we need a copy of it so that both products and filtered_products are different, hence we use spread operator. This is very important
-        products: [...action.payload],
+        all_products: [...action.payload],
         filtered_products: [...action.payload],
       }
     case SET_GRIDVIEW:
@@ -93,7 +93,7 @@ const filter_reducer = (state, action) => {
         },
       }
     case FILTER_PRODUCTS:
-      console.log('filtering products')
+      console.log(state)
       return {
         ...state,
       }
