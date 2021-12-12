@@ -58,9 +58,13 @@ export const FilterProvider = ({ children }) => {
   }
 
   const updateFilters = (e) => {
+    e.preventDefault()
     let name = e.target.name
     let value = e.target.value
-    // console.log(name, value)
+    if (name === 'category') {
+      value = e.target.textContent
+    }
+    console.log(`Logging this ${name} ${value}`)
     dispatch({ type: UPDATE_FILTERS, payload: { name, value } })
   }
 
