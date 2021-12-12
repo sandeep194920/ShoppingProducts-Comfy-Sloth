@@ -7,7 +7,7 @@ import {
   UPDATE_FILTERS,
   FILTER_PRODUCTS,
   CLEAR_FILTERS,
-} from '../actions';
+} from '../actions'
 
 const filter_reducer = (state, action) => {
   switch (action.type) {
@@ -17,12 +17,91 @@ const filter_reducer = (state, action) => {
         // below, action.payload is an array (products) and if we just paste it as is without spreading then products and filtered_products would point to the same (object reference concept) and hence we need a copy of it so that both products and filtered_products are different, hence we use spread operator. This is very important
         products: [...action.payload],
         filtered_products: [...action.payload],
-      };
-    default:
-      return state;
-  }
-  return state;
-  throw new Error(`No Matching "${action.type}" - action type`);
-};
+      }
+    case SET_GRIDVIEW:
+      return {
+        ...state,
+        grid_view: true,
+      }
+    case SET_LISTVIEW:
+      return {
+        ...state,
+        grid_view: false,
+      }
+    case UPDATE_SORT:
+      return {
+        ...state,
+        sort: action.payload,
+      }
+    case SORT_PRODUCTS:
+      const { sort, filtered_products } = state
+      let tempProducts = [...filtered_products]
+      if (sort === 'price-lowest') {
+        tempProducts.sort((a, b) => {
+          return a.price - b.price
+        })
+      }
 
-export default filter_reducer;
+      if (sort === 'price-highest') {
+        tempProducts.sort((a, b) => b.price - a.price)
+      }
+
+      if (sort === 'name-a') {
+        tempProducts.sort((a, b) => {
+          // let nameA = a.name.toUpperCase()
+          // let nameB = b.name.toUpperCase()
+          // if (nameB > nameA) {
+          //   return -1
+          // }
+          // if (nameA > nameB) {
+          //   return 1
+          // }
+          // return 0
+
+          // above commented lines can be written as below
+
+          return a.name.localeCompare(b.name)
+        })
+      }
+
+      if (sort === 'name-z') {
+        tempProducts.sort((a, b) => {
+          // let nameA = a.name.toUpperCase()
+          // let nameB = b.name.toUpperCase()
+          // if (nameA > nameB) {
+          //   return -1
+          // }
+          // if (nameB > nameA) {
+          //   return 1
+          // }
+          // return 0
+          return b.name.localeCompare(a.name)
+        })
+      }
+
+      return {
+        ...state,
+        filtered_products: tempProducts,
+      }
+    case UPDATE_FILTERS:
+      const { name, value } = action.payload
+      return {
+        ...state,
+        filters: {
+          ...state.filters,
+          [name]: value,
+        },
+      }
+    case FILTER_PRODUCTS:
+      console.log('filtering products')
+      return {
+        ...state,
+      }
+    default:
+      return state
+  }
+  return state
+  throw new Error(`No Matching "${action.type}" - action type`)
+}
+
+export default filter_reducer
